@@ -1,1 +1,247 @@
-<a>hello world</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpongeBob SquarePants Episode Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(180deg, #87CEEB 0%, #4A90E2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #FFD700;
+            font-size: 3em;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: end;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        select {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 3px solid #FFD700;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            min-width: 150px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #FFA500;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: #FFD700;
+            border: 3px solid #FFA500;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #FFA500;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .video-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .episode-info {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            select, button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍍 SpongeBob SquarePants 🧽</h1>
+            <p style="color: white; font-size: 1.2em; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Episode Viewer</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="season">Season:</label>
+                <select id="season">
+                    <option value="1">Season 1</option>
+                    <option value="2">Season 2</option>
+                    <option value="3">Season 3</option>
+                    <option value="4">Season 4</option>
+                    <option value="5">Season 5</option>
+                    <option value="6">Season 6</option>
+                    <option value="7">Season 7</option>
+                    <option value="8">Season 8</option>
+                    <option value="9">Season 9</option>
+                    <option value="10">Season 10</option>
+                    <option value="11">Season 11</option>
+                    <option value="12">Season 12</option>
+                    <option value="13">Season 13</option>
+                    <option value="14">Season 14</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="episode">Episode:</label>
+                <select id="episode">
+                    <!-- Episodes will be populated by JavaScript -->
+                </select>
+            </div>
+
+            <button onclick="loadEpisode()">🎬 Watch Episode</button>
+        </div>
+
+        <div class="video-container">
+            <div class="video-wrapper">
+                <iframe id="video-player" 
+                        src="https://vidsrc-embed.ru/embed/tv?imdb=tt0206512&season=1&episode=1" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <div class="episode-info" id="episode-info">
+                Season 1, Episode 1
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Episode counts per season (approximate)
+        const episodesPerSeason = {
+            1: 20, 2: 20, 3: 20, 4: 20, 5: 20,
+            6: 26, 7: 26, 8: 26, 9: 26, 10: 11,
+            11: 26, 12: 26, 13: 26, 14: 15
+        };
+
+        function updateEpisodeOptions() {
+            const season = document.getElementById('season').value;
+            const episodeSelect = document.getElementById('episode');
+            const episodeCount = episodesPerSeason[season] || 20;
+            
+            episodeSelect.innerHTML = '';
+            
+            for (let i = 1; i <= episodeCount; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `Episode ${i}`;
+                episodeSelect.appendChild(option);
+            }
+        }
+
+        function loadEpisode() {
+            const season = document.getElementById('season').value;
+            const episode = document.getElementById('episode').value;
+            const iframe = document.getElementById('video-player');
+            const info = document.getElementById('episode-info');
+            
+            const url = `https://vidsrc-embed.ru/embed/tv?imdb=tt0206512&season=${season}&episode=${episode}`;
+            iframe.src = url;
+            
+            info.textContent = `Season ${season}, Episode ${episode}`;
+        }
+
+        // Update episodes when season changes
+        document.getElementById('season').addEventListener('change', updateEpisodeOptions);
+
+        // Initialize episode options
+        updateEpisodeOptions();
+    </script>
+</body>
+</html>
